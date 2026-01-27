@@ -41,12 +41,15 @@ model Hive {
   name      String
   location  String?
   status    String?
-
+  strength Int?
+  
   ownerId   Int
   owner     User     @relation(fields: [ownerId], references: [id])
 
   comments  Comment[]
   createdAt DateTime @default(now())
+  @@unique([ownerId, name])
+
 }
 
 model Comment {
