@@ -94,11 +94,25 @@ export default function HiveDetailPage() {
         {hive.comments && hive.comments.length > 0 ? (
           <div style={{ display: "grid", gap: 10 }}>
             {hive.comments.map((c) => (
-              <div key={c.id} style={{ border: "1px solid #eee", borderRadius: 10, padding: 10 }}>
+              <div
+                key={c.id}
+                style={{
+                  border: "1px solid #e5e5e5",
+                  borderRadius: 12,
+                  padding: 12,
+                  backgroundColor: "#fafafa",
+                  boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
+                  display: "grid",
+                  gap: 6,
+                }}
+              >
                 <div style={{ fontWeight: 600 }}>{c.text}</div>
-                <div style={{ opacity: 0.7, marginTop: 4 }}>Comment ID: {c.id}</div>
+                <div style={{ fontSize: 12, opacity: 0.6 }}>
+                  Comment ID: {c.id}
+                </div>
               </div>
             ))}
+
           </div>
         ) : (
           <div style={{ opacity: 0.8 }}>Nema komentara.</div>
