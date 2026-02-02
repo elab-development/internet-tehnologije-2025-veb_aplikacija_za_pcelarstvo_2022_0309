@@ -96,8 +96,17 @@ export default function HiveDetailPage() {
   const st = statusStyles(hive.status);
 
   return (
-    <div style={{ maxWidth: 980, margin: "40px auto", padding: 16, display: "grid", gap: 14 }}>
-      {/* HEADER */}
+<div
+  style={{
+    maxWidth: 980,
+    margin: "40px auto",
+    padding: 16,
+    display: "grid",
+    gap: 14,
+    background: "#fffbea",
+    borderRadius: 20,
+  }}
+>      {/* HEADER */}
       <div
         style={{
           background: "linear-gradient(135deg, #6366f1, #22c55e)",

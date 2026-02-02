@@ -80,7 +80,17 @@ export default function HivesPage() {
   }, [hives, query]);
 
   return (
-    <div style={{ maxWidth: 1000, margin: "40px auto", padding: 16, display: "grid", gap: 20 }}>
+<div
+  style={{
+    maxWidth: 1000,
+    margin: "40px auto",
+    padding: 16,
+    display: "grid",
+    gap: 20,
+    background: "#fffbea",
+    borderRadius: 20,
+  }}
+>
       {/* HEADER */}
       <div
         style={{
