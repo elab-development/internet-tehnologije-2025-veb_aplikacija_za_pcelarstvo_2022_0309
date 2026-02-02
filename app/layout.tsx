@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -21,6 +21,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const router = useRouter();
+  const pathname = usePathname();
   const [userName, setUserName] = useState<string | null>(null);
 
   useEffect(() => {
@@ -29,11 +30,13 @@ export default function RootLayout({
       try {
         const parsed = JSON.parse(u);
         setUserName(parsed.fullName ?? null);
-      } catch {}
+      } catch {
+        setUserName(null);
+      }
     } else {
       setUserName(null);
     }
-  }, []);
+  }, [pathname]);
 
   function logout() {
     localStorage.removeItem("token");
