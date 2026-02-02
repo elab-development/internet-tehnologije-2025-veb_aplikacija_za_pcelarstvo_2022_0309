@@ -36,7 +36,6 @@ export default function HivesPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // ✅ SEARCH
   const [query, setQuery] = useState("");
 
   useEffect(() => {
@@ -67,7 +66,6 @@ export default function HivesPage() {
     router.push("/login");
   }
 
-  // ✅ filtrirano (po name i location)
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return hives;
@@ -80,17 +78,17 @@ export default function HivesPage() {
   }, [hives, query]);
 
   return (
-<div
-  style={{
-    maxWidth: 1000,
-    margin: "40px auto",
-    padding: 16,
-    display: "grid",
-    gap: 20,
-    background: "#fffbea",
-    borderRadius: 20,
-  }}
->
+    <div
+      style={{
+        maxWidth: 1000,
+        margin: "40px auto",
+        padding: 16,
+        display: "grid",
+        gap: 20,
+        background: "#fffbea",
+        borderRadius: 20,
+      }}
+    >
       {/* HEADER */}
       <div
         style={{
@@ -111,23 +109,41 @@ export default function HivesPage() {
           <h1 style={{ fontSize: 32, fontWeight: 900, margin: 0 }}>Košnice</h1>
         </div>
 
-        <button
-          onClick={logout}
-          style={{
-            padding: "8px 14px",
-            borderRadius: 10,
-            border: "none",
-            background: "white",
-            color: "#111827",
-            cursor: "pointer",
-            fontWeight: 700,
-          }}
-        >
-          Logout
-        </button>
+        {/* ✅ NOVA KOŠNICA + LOGOUT */}
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+          <button
+            onClick={() => router.push("/hives/create")}
+            style={{
+              padding: "8px 14px",
+              borderRadius: 10,
+              border: "none",
+              background: "rgba(255,255,255,0.92)",
+              color: "#111827",
+              cursor: "pointer",
+              fontWeight: 800,
+            }}
+          >
+            + Nova košnica
+          </button>
+
+          <button
+            onClick={logout}
+            style={{
+              padding: "8px 14px",
+              borderRadius: 10,
+              border: "none",
+              background: "white",
+              color: "#111827",
+              cursor: "pointer",
+              fontWeight: 700,
+            }}
+          >
+            Logout
+          </button>
+        </div>
       </div>
 
-      {/* ✅ SEARCH BAR */}
+      {/* SEARCH BAR */}
       {!loading && !error && (
         <div
           style={{
@@ -176,7 +192,6 @@ export default function HivesPage() {
 
       {!loading && !error && (
         <div style={{ display: "grid", gap: 16 }}>
-          {/* ✅ EMPTY STATE (nema košnica) */}
           {hives.length === 0 && (
             <div
               style={{
@@ -191,7 +206,6 @@ export default function HivesPage() {
             </div>
           )}
 
-          {/* ✅ NO RESULTS */}
           {hives.length > 0 && filtered.length === 0 && (
             <div
               style={{
@@ -206,7 +220,6 @@ export default function HivesPage() {
             </div>
           )}
 
-          {/* LISTA */}
           {filtered.map((h) => {
             const st = statusStyles(h.status);
 
@@ -245,7 +258,6 @@ export default function HivesPage() {
                   </span>
                 </div>
 
-                {/* STRENGTH BAR */}
                 <div>
                   <div style={{ display: "flex", justifyContent: "space-between" }}>
                     <span style={{ fontWeight: 700 }}>Strength</span>
@@ -271,21 +283,37 @@ export default function HivesPage() {
                   </div>
                 </div>
 
-                <button
-                  onClick={() => router.push(`/hives/${h.id}`)}
-                  style={{
-                    marginTop: 10,
-                    padding: "8px 14px",
-                    borderRadius: 10,
-                    border: "none",
-                    background: "#4f46e5",
-                    color: "white",
-                    cursor: "pointer",
-                    fontWeight: 700,
-                  }}
-                >
-                  Detalji
-                </button>
+                {/* ✅ DETALJI + UREDI */}
+                <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 10 }}>
+                  <button
+                    onClick={() => router.push(`/hives/${h.id}`)}
+                    style={{
+                      padding: "8px 14px",
+                      borderRadius: 10,
+                      border: "none",
+                      background: "#4f46e5",
+                      color: "white",
+                      cursor: "pointer",
+                      fontWeight: 800,
+                    }}
+                  >
+                    Detalji
+                  </button>
+
+                  <button
+                    onClick={() => router.push(`/hives/edit/${h.id}`)}
+                    style={{
+                      padding: "8px 14px",
+                      borderRadius: 10,
+                      border: "1px solid #cbd5e1",
+                      background: "#f8fafc",
+                      cursor: "pointer",
+                      fontWeight: 800,
+                    }}
+                  >
+                    ✏️ Uredi
+                  </button>
+                </div>
               </div>
             );
           })}

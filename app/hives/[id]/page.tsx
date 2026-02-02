@@ -15,17 +15,12 @@ type Hive = {
 };
 
 function statusStyles(status?: string | null) {
-  if (status === "ACTIVE") {
-    return { bg: "#dcfce7", fg: "#15803d", border: "#22c55e", label: "ACTIVE ✅" };
-  }
-  if (status === "INACTIVE") {
-    return { bg: "#fee2e2", fg: "#b91c1c", border: "#ef4444", label: "INACTIVE ⛔" };
-  }
+  if (status === "ACTIVE") return { bg: "#dcfce7", fg: "#15803d", border: "#22c55e", label: "ACTIVE ✅" };
+  if (status === "INACTIVE") return { bg: "#fee2e2", fg: "#b91c1c", border: "#ef4444", label: "INACTIVE ⛔" };
   return { bg: "#fef3c7", fg: "#92400e", border: "#f59e0b", label: `${status ?? "UNKNOWN"} ⚠️` };
 }
 
 function strengthPercent(strength?: number | null) {
-  // pretpostavimo 0-10
   if (strength === null || strength === undefined) return 0;
   const clamped = Math.max(0, Math.min(10, strength));
   return (clamped / 10) * 100;
@@ -96,17 +91,18 @@ export default function HiveDetailPage() {
   const st = statusStyles(hive.status);
 
   return (
-<div
-  style={{
-    maxWidth: 980,
-    margin: "40px auto",
-    padding: 16,
-    display: "grid",
-    gap: 14,
-    background: "#fffbea",
-    borderRadius: 20,
-  }}
->      {/* HEADER */}
+    <div
+      style={{
+        maxWidth: 980,
+        margin: "40px auto",
+        padding: 16,
+        display: "grid",
+        gap: 14,
+        background: "#fffbea",
+        borderRadius: 20,
+      }}
+    >
+      {/* HEADER */}
       <div
         style={{
           background: "linear-gradient(135deg, #6366f1, #22c55e)",
@@ -153,7 +149,11 @@ export default function HiveDetailPage() {
           </div>
         </div>
 
-        <Button onClick={() => router.push("/hives")}>← Nazad</Button>
+        {/* ✅ EDIT + BACK */}
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+          <Button onClick={() => router.push(`/hives/edit/${hive.id}`)}>✏️ Uredi</Button>
+          <Button onClick={() => router.push("/hives")}>← Nazad</Button>
+        </div>
       </div>
 
       {/* INFO CARDS */}
@@ -176,7 +176,8 @@ export default function HiveDetailPage() {
 
             {hive.owner && (
               <div>
-                <b>Owner:</b> {hive.owner.fullName} <span style={{ opacity: 0.7 }}>({hive.owner.email})</span>
+                <b>Owner:</b> {hive.owner.fullName}{" "}
+                <span style={{ opacity: 0.7 }}>({hive.owner.email})</span>
               </div>
             )}
           </div>
@@ -242,9 +243,7 @@ export default function HiveDetailPage() {
       >
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
           <h2 style={{ fontSize: 18, fontWeight: 900 }}>💬 Komentari</h2>
-          <span style={{ opacity: 0.7, fontWeight: 700 }}>
-            {hive.comments?.length ?? 0} ukupno
-          </span>
+          <span style={{ opacity: 0.7, fontWeight: 700 }}>{hive.comments?.length ?? 0} ukupno</span>
         </div>
 
         <div style={{ marginTop: 12 }}>
