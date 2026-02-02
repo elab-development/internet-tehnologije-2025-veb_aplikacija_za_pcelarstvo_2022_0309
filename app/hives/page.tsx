@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
 type Hive = {
@@ -36,6 +36,9 @@ export default function HivesPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // ✅ SEARCH
+  const [query, setQuery] = useState("");
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -64,6 +67,18 @@ export default function HivesPage() {
     router.push("/login");
   }
 
+  // ✅ filtrirano (po name i location)
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return hives;
+
+    return hives.filter((h) => {
+      const name = (h.name ?? "").toLowerCase();
+      const loc = (h.location ?? "").toLowerCase();
+      return name.includes(q) || loc.includes(q);
+    });
+  }, [hives, query]);
+
   return (
     <div style={{ maxWidth: 1000, margin: "40px auto", padding: 16, display: "grid", gap: 20 }}>
       {/* HEADER */}
@@ -83,7 +98,7 @@ export default function HivesPage() {
       >
         <div>
           <div style={{ fontSize: 12, opacity: 0.9 }}>🐝 Beekeeping Dashboard</div>
-          <h1 style={{ fontSize: 32, fontWeight: 900 }}>Košnice</h1>
+          <h1 style={{ fontSize: 32, fontWeight: 900, margin: 0 }}>Košnice</h1>
         </div>
 
         <button
@@ -102,12 +117,87 @@ export default function HivesPage() {
         </button>
       </div>
 
+      {/* ✅ SEARCH BAR */}
+      {!loading && !error && (
+        <div
+          style={{
+            background: "#ffffff",
+            borderRadius: 18,
+            padding: 14,
+            boxShadow: "0 6px 16px rgba(0,0,0,0.08)",
+            display: "flex",
+            gap: 12,
+            alignItems: "center",
+            flexWrap: "wrap",
+          }}
+        >
+          <div style={{ fontWeight: 800, opacity: 0.85 }}>🔎 Pretraga</div>
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Pretraži po nazivu ili lokaciji (npr. Tara, Košnica 1...)"
+            style={{
+              flex: 1,
+              minWidth: 260,
+              padding: "10px 12px",
+              borderRadius: 12,
+              border: "1px solid #cbd5e1",
+              outline: "none",
+            }}
+          />
+          <button
+            onClick={() => setQuery("")}
+            style={{
+              padding: "10px 12px",
+              borderRadius: 12,
+              border: "1px solid #cbd5e1",
+              background: "#f8fafc",
+              cursor: "pointer",
+              fontWeight: 700,
+            }}
+          >
+            Reset
+          </button>
+        </div>
+      )}
+
       {loading && <p>Učitavanje...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       {!loading && !error && (
         <div style={{ display: "grid", gap: 16 }}>
-          {hives.map((h) => {
+          {/* ✅ EMPTY STATE (nema košnica) */}
+          {hives.length === 0 && (
+            <div
+              style={{
+                borderRadius: 16,
+                padding: 20,
+                background: "#ffffff",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
+                textAlign: "center",
+              }}
+            >
+              Nema košnica u bazi 🐝
+            </div>
+          )}
+
+          {/* ✅ NO RESULTS */}
+          {hives.length > 0 && filtered.length === 0 && (
+            <div
+              style={{
+                borderRadius: 16,
+                padding: 20,
+                background: "#ffffff",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
+                textAlign: "center",
+              }}
+            >
+              Nema rezultata za: <b>{query}</b>
+            </div>
+          )}
+
+          {/* LISTA */}
+          {filtered.map((h) => {
             const st = statusStyles(h.status);
 
             return (
@@ -189,20 +279,6 @@ export default function HivesPage() {
               </div>
             );
           })}
-
-          {hives.length === 0 && (
-            <div
-              style={{
-                borderRadius: 16,
-                padding: 20,
-                background: "#ffffff",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
-                textAlign: "center",
-              }}
-            >
-              Nema košnica u bazi 🐝
-            </div>
-          )}
         </div>
       )}
     </div>
