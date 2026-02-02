@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { PageShell, FancyHeader, Card, Input, PrimaryButton, GhostButton, ErrorBox } from "../components/ui";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -24,7 +25,6 @@ export default function LoginPage() {
       });
 
       const data = await res.json();
-
       if (!res.ok) {
         setError(data?.error ?? "Login failed");
         return;
@@ -32,7 +32,6 @@ export default function LoginPage() {
 
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
-
       router.push("/hives");
     } catch {
       setError("Server error");
@@ -42,83 +41,34 @@ export default function LoginPage() {
   }
 
   return (
-    <div
-      style={{
-        minHeight: "80vh",
-        display: "grid",
-        placeItems: "center",
-        padding: 16,
-      }}
-    >
-      <div
-        style={{
-          width: "100%",
-          maxWidth: 420,
-          border: "1px solid #e5e5e5",
-          borderRadius: 12,
-          padding: 18,
-        }}
-      >
-        <h1 style={{ fontSize: 28, fontWeight: 700, marginBottom: 16, textAlign: "center" }}>
-          Login
-        </h1>
+    <PageShell>
+      <FancyHeader
+        title="Login"
+        subtitle="🐝 Beekeeping Dashboard"
+        right={
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+            <GhostButton onClick={() => router.push("/register")}>Register</GhostButton>
+          </div>
+        }
+      />
 
-        <form onSubmit={handleSubmit} style={{ display: "grid", gap: 12 }}>
-          <label style={{ display: "grid", gap: 6 }}>
-            <span style={{ opacity: 0.8 }}>Email</span>
-            <input
-              type="email"
-              placeholder="test@test.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              style={{
-                padding: "10px 12px",
-                borderRadius: 10,
-                border: "1px solid #cfcfcf",
-                outline: "none",
-              }}
-            />
-          </label>
+      <div style={{ height: 18 }} />
 
-          <label style={{ display: "grid", gap: 6 }}>
-            <span style={{ opacity: 0.8 }}>Lozinka</span>
-            <input
-              type="password"
-              placeholder="123456"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              style={{
-                padding: "10px 12px",
-                borderRadius: 10,
-                border: "1px solid #cfcfcf",
-                outline: "none",
-              }}
-            />
-          </label>
+      <Card>
+        <form onSubmit={handleSubmit} style={{ display: "grid", gap: 14 }}>
+          <Input label="Email" value={email} onChange={setEmail} placeholder="test@test.com" required />
+          <Input label="Lozinka" value={password} onChange={setPassword} type="password" placeholder="••••••" required />
 
-          {error && (
-            <div style={{ padding: 10, borderRadius: 10, border: "1px solid #ffb3b3" }}>
-              {error}
-            </div>
-          )}
+          {error && <ErrorBox text={error} />}
 
-          <button
-            type="submit"
-            disabled={loading}
-            style={{
-              padding: "10px 12px",
-              borderRadius: 10,
-              border: "1px solid #cfcfcf",
-              cursor: loading ? "not-allowed" : "pointer",
-              fontWeight: 600,
-            }}
-          >
-            {loading ? "Logovanje..." : "Login"}
-          </button>
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+            <PrimaryButton type="submit" disabled={loading}>
+              {loading ? "Logovanje..." : "Login"}
+            </PrimaryButton>
+            <GhostButton onClick={() => router.push("/register")}>Nemam nalog → Register</GhostButton>
+          </div>
         </form>
-      </div>
-    </div>
+      </Card>
+    </PageShell>
   );
 }

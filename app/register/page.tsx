@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Input } from "../components/Input";
-import { Button } from "../components/Button";
+import { PageShell, FancyHeader, Card, Input, Select, PrimaryButton, GhostButton, ErrorBox } from "../components/ui";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -11,6 +10,8 @@ export default function RegisterPage() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("BEEKEEPER");
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -22,26 +23,20 @@ export default function RegisterPage() {
     try {
       const res = await fetch("/api/auth/register", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          fullName,
-          email,
-          password,
-          role: "BEEKEEPER",
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fullName, email, password, role }),
       });
 
       const data = await res.json();
-
       if (!res.ok) {
         setError(data?.error ?? "Register failed");
         return;
       }
 
-      // nakon registracije vodi na login
-      router.push("/login");
+      // posle registracije odmah login
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      router.push("/hives");
     } catch {
       setError("Server error");
     } finally {
@@ -50,84 +45,38 @@ export default function RegisterPage() {
   }
 
   return (
-    <div
-      style={{
-        minHeight: "80vh",
-        display: "grid",
-        placeItems: "center",
-        padding: 16,
-      }}
-    >
-      <div
-        style={{
-          width: "100%",
-          maxWidth: 420,
-          border: "1px solid #e5e5e5",
-          borderRadius: 12,
-          padding: 18,
-        }}
-      >
-        <h1
-          style={{
-            fontSize: 28,
-            fontWeight: 700,
-            marginBottom: 16,
-            textAlign: "center",
-          }}
-        >
-          Register
-        </h1>
+    <PageShell>
+      <FancyHeader title="Register" subtitle="🐝 Beekeeping Dashboard" right={<GhostButton onClick={() => router.push("/login")}>Login</GhostButton>} />
 
-        <form onSubmit={handleSubmit} style={{ display: "grid", gap: 12 }}>
-          <label style={{ display: "grid", gap: 6 }}>
-            <span style={{ opacity: 0.8 }}>Ime i prezime</span>
-            <Input
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              placeholder="Marko Marković"
-              required
-            />
-          </label>
+      <div style={{ height: 18 }} />
 
-          <label style={{ display: "grid", gap: 6 }}>
-            <span style={{ opacity: 0.8 }}>Email</span>
-            <Input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="test@test.com"
-              required
-            />
-          </label>
+      <Card>
+        <form onSubmit={handleSubmit} style={{ display: "grid", gap: 14 }}>
+          <Input label="Ime i prezime" value={fullName} onChange={setFullName} placeholder="Npr. Test User" required />
+          <Input label="Email" value={email} onChange={setEmail} placeholder="test@test.com" required />
+          <Input label="Lozinka" value={password} onChange={setPassword} type="password" placeholder="••••••" required />
 
-          <label style={{ display: "grid", gap: 6 }}>
-            <span style={{ opacity: 0.8 }}>Lozinka</span>
-            <Input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="123456"
-              required
-            />
-          </label>
+          <Select
+            label="Uloga"
+            value={role}
+            onChange={setRole}
+            options={[
+              { value: "BEEKEEPER", label: "BEEKEEPER (pčelar)" },
+              { value: "ADMIN", label: "ADMIN" },
+              { value: "ASSOCIATION_REP", label: "ASSOCIATION_REP" },
+            ]}
+          />
 
-          {error && (
-            <div
-              style={{
-                padding: 10,
-                borderRadius: 10,
-                border: "1px solid #ffb3b3",
-              }}
-            >
-              {error}
-            </div>
-          )}
+          {error && <ErrorBox text={error} />}
 
-          <Button type="submit" disabled={loading}>
-            {loading ? "Kreiram nalog..." : "Register"}
-          </Button>
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+            <PrimaryButton type="submit" disabled={loading}>
+              {loading ? "Kreiranje..." : "Napravi nalog"}
+            </PrimaryButton>
+            <GhostButton onClick={() => router.push("/login")}>Već imam nalog → Login</GhostButton>
+          </div>
         </form>
-      </div>
-    </div>
+      </Card>
+    </PageShell>
   );
 }

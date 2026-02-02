@@ -2,58 +2,101 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { PageShell, FancyHeader, Card, Input, Select, PrimaryButton, GhostButton, ErrorBox } from "../../components/ui";
 
 export default function CreateHivePage() {
   const router = useRouter();
+
   const [name, setName] = useState("");
   const [location, setLocation] = useState("");
   const [status, setStatus] = useState("ACTIVE");
-  const [strength, setStrength] = useState(5);
+  const [strength, setStrength] = useState("7");
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setError(null);
 
     const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/login");
+      return;
+    }
 
-    const res = await fetch("/api/hives", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ name, location, status, strength }),
-    });
+    setLoading(true);
+    try {
+      const res = await fetch("/api/hives", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          name,
+          location: location.length ? location : null,
+          status,
+          strength: strength.length ? Number(strength) : null,
+        }),
+      });
 
-    if (res.ok) {
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data?.error ?? "Ne mogu da kreiram košnicu.");
+        return;
+      }
+
       router.push("/hives");
-    } else {
-      alert("Greška pri dodavanju košnice");
+    } catch {
+      setError("Greška na serveru.");
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
-    <div style={{ maxWidth: 600, margin: "40px auto", padding: 20 }}>
-      <h1>Dodaj košnicu</h1>
+    <PageShell>
+      <FancyHeader
+        title="Nova košnica"
+        subtitle="🐝 Beekeeping Dashboard"
+        right={
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+            <GhostButton onClick={() => router.push("/hives")}>← Nazad</GhostButton>
+          </div>
+        }
+      />
 
-      <form onSubmit={handleSubmit} style={{ display: "grid", gap: 12 }}>
-        <input placeholder="Naziv" value={name} onChange={(e) => setName(e.target.value)} required />
-        <input placeholder="Lokacija" value={location} onChange={(e) => setLocation(e.target.value)} />
+      <div style={{ height: 18 }} />
 
-        <select value={status} onChange={(e) => setStatus(e.target.value)}>
-          <option value="ACTIVE">ACTIVE</option>
-          <option value="INACTIVE">INACTIVE</option>
-        </select>
+      <Card>
+        <form onSubmit={handleSubmit} style={{ display: "grid", gap: 14 }}>
+          <Input label="Naziv košnice" value={name} onChange={setName} placeholder="Npr. Bagremova košnica" required />
+          <Input label="Lokacija" value={location} onChange={setLocation} placeholder="Npr. Tara" />
 
-        <input
-          type="number"
-          min={0}
-          max={10}
-          value={strength}
-          onChange={(e) => setStrength(Number(e.target.value))}
-        />
+          <Select
+            label="Status"
+            value={status}
+            onChange={setStatus}
+            options={[
+              { value: "ACTIVE", label: "ACTIVE ✅" },
+              { value: "INACTIVE", label: "INACTIVE ⛔" },
+              { value: "OK", label: "OK 👍" },
+            ]}
+          />
 
-        <button type="submit">Sačuvaj</button>
-      </form>
-    </div>
+          <Input label="Strength (0-10)" value={strength} onChange={setStrength} type="number" placeholder="0-10" />
+
+          {error && <ErrorBox text={error} />}
+
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+            <PrimaryButton type="submit" disabled={loading}>
+              {loading ? "Čuvanje..." : "Sačuvaj"}
+            </PrimaryButton>
+            <GhostButton onClick={() => router.push("/hives")}>Otkaži</GhostButton>
+          </div>
+        </form>
+      </Card>
+    </PageShell>
   );
 }

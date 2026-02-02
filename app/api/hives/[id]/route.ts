@@ -30,7 +30,7 @@ export async function GET(_: Request, ctx: Context) {
   return NextResponse.json({ hive });
 }
 
-// PUT /api/hives/:id  (ulogovan + owner ili ADMIN)
+// PUT /api/hives/:id
 export async function PUT(req: Request, ctx: Context) {
   const auth = getAuthUserFromRequest(req);
   if (!auth) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -50,6 +50,20 @@ export async function PUT(req: Request, ctx: Context) {
   const name = body?.name;
   const location = body?.location;
   const status = body?.status;
+  const strength = body?.strength;
+
+  let strengthValue = existing.strength;
+  if (strength !== undefined) {
+    if (strength === null || strength === "") {
+      strengthValue = null;
+    } else {
+      const n = Number(strength);
+      if (Number.isNaN(n) || n < 0 || n > 10) {
+        return NextResponse.json({ error: "Strength mora biti broj 0-10" }, { status: 400 });
+      }
+      strengthValue = n;
+    }
+  }
 
   const hive = await prisma.hive.update({
     where: { id },
@@ -57,13 +71,14 @@ export async function PUT(req: Request, ctx: Context) {
       name: typeof name === "string" && name.length > 0 ? name : existing.name,
       location: location === undefined ? existing.location : (location ?? null),
       status: status === undefined ? existing.status : (status ?? null),
+      strength: strengthValue,
     },
   });
 
   return NextResponse.json({ hive });
 }
 
-// DELETE /api/hives/:id  (ulogovan + owner ili ADMIN)
+// DELETE /api/hives/:id
 export async function DELETE(req: Request, ctx: Context) {
   const auth = getAuthUserFromRequest(req);
   if (!auth) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
