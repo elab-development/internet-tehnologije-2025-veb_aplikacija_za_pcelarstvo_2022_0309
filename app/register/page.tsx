@@ -46,7 +46,7 @@ export default function RegisterPage() {
 
   return (
     <PageShell>
-      <FancyHeader title="Register" subtitle="🐝 Beekeeping Dashboard" right={<GhostButton onClick={() => router.push("/login")}>Login</GhostButton>} />
+      <FancyHeader title="Register" subtitle="🐝 Beekeeping Dashboard" />
 
       <div style={{ height: 18 }} />
 

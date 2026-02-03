@@ -20,6 +20,23 @@ type HiveStats = {
   topLocations: { location: string; count: number }[];
 };
 
+type StoredUser = {
+  id: number;
+  email: string;
+  fullName: string;
+  role: "BEEKEEPER" | "ADMIN" | "ASSOCIATION_REP";
+};
+
+function getStoredUser(): StoredUser | null {
+  try {
+    const raw = localStorage.getItem("user");
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
 function statusStyles(status?: string | null) {
   if (status === "ACTIVE") return { bg: "#dcfce7", fg: "#15803d", border: "#22c55e", label: "ACTIVE ✅" };
   if (status === "INACTIVE") return { bg: "#fee2e2", fg: "#b91c1c", border: "#ef4444", label: "INACTIVE ⛔" };
@@ -47,12 +64,20 @@ export default function HivesPage() {
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState("");
 
+  const [me, setMe] = useState<StoredUser | null>(null);
+
+  // ✅ Samo ADMIN i BEEKEEPER smeju da dodaju/uređuju košnice
+  const canManageHives = me?.role === "ADMIN" || me?.role === "BEEKEEPER";
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
       router.push("/login");
       return;
     }
+
+    // učitaj ulogovanog korisnika iz localStorage (da znamo rolu)
+    setMe(getStoredUser());
 
     async function loadHives() {
       try {
@@ -134,21 +159,24 @@ export default function HivesPage() {
           <h1 style={{ fontSize: 32, fontWeight: 900, margin: 0 }}>Košnice</h1>
         </div>
 
-        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-          <button
-            onClick={() => router.push("/hives/create")}
-            style={{
-              padding: "8px 14px",
-              borderRadius: 10,
-              border: "none",
-              background: "rgba(255,255,255,0.92)",
-              color: "#111827",
-              cursor: "pointer",
-              fontWeight: 800,
-            }}
-          >
-            + Nova košnica
-          </button>
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
+          {/* ✅ Sakrij za ASSOCIATION_REP */}
+          {canManageHives && (
+            <button
+              onClick={() => router.push("/hives/create")}
+              style={{
+                padding: "8px 14px",
+                borderRadius: 10,
+                border: "none",
+                background: "rgba(255,255,255,0.92)",
+                color: "#111827",
+                cursor: "pointer",
+                fontWeight: 800,
+              }}
+            >
+              + Nova košnica
+            </button>
+          )}
 
           <button
             onClick={logout}
@@ -392,19 +420,22 @@ export default function HivesPage() {
                       Detalji
                     </button>
 
-                    <button
-                      onClick={() => router.push(`/hives/edit/${h.id}`)}
-                      style={{
-                        padding: "8px 14px",
-                        borderRadius: 10,
-                        border: "1px solid #cbd5e1",
-                        background: "#f8fafc",
-                        cursor: "pointer",
-                        fontWeight: 800,
-                      }}
-                    >
-                      ✏️ Uredi
-                    </button>
+                    {/* ✅ Sakrij "Uredi" za ASSOCIATION_REP */}
+                    {canManageHives && (
+                      <button
+                        onClick={() => router.push(`/hives/edit/${h.id}`)}
+                        style={{
+                          padding: "8px 14px",
+                          borderRadius: 10,
+                          border: "1px solid #cbd5e1",
+                          background: "#f8fafc",
+                          cursor: "pointer",
+                          fontWeight: 800,
+                        }}
+                      >
+                        ✏️ Uredi
+                      </button>
+                    )}
                   </div>
                 </div>
               );

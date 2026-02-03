@@ -46,10 +46,23 @@ export default function LoginPage() {
         title="Login"
         subtitle="🐝 Beekeeping Dashboard"
         right={
-          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <GhostButton onClick={() => router.push("/register")}>Register</GhostButton>
-          </div>
+          <button
+            onClick={() => router.push("/register")}
+            style={{
+              padding: "8px 14px",
+              borderRadius: 10,
+              border: "none",
+              background: "rgba(255,255,255,0.9)",
+              color: "#111827",
+              fontWeight: 800,
+              cursor: "pointer"
+            }}
+          >
+            Register
+          </button>
         }
+
+
       />
 
       <div style={{ height: 18 }} />
