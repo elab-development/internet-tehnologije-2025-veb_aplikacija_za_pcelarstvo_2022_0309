@@ -149,9 +149,35 @@ export default function HiveDetailPage() {
           </div>
         </div>
 
-        {/* ✅ EDIT + BACK */}
+        {/* EDIT + DELETE + BACK */}
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
           <Button onClick={() => router.push(`/hives/edit/${hive.id}`)}>✏️ Uredi</Button>
+
+          <Button
+            onClick={async () => {
+              const token = localStorage.getItem("token");
+              if (!token) return router.push("/login");
+
+              const ok = confirm(`Obriši košnicu "${hive.name}"?`);
+              if (!ok) return;
+
+              const res = await fetch(`/api/hives/${hive.id}`, {
+                method: "DELETE",
+                headers: { Authorization: `Bearer ${token}` },
+              });
+
+              if (!res.ok) {
+                const data = await res.json().catch(() => null);
+                alert(data?.error ?? "Brisanje nije dozvoljeno.");
+                return;
+              }
+
+              router.push("/hives");
+            }}
+          >
+            🗑 Obriši
+          </Button>
+
           <Button onClick={() => router.push("/hives")}>← Nazad</Button>
         </div>
       </div>
@@ -223,10 +249,10 @@ export default function HiveDetailPage() {
             {hive.strength === null || hive.strength === undefined
               ? "Nema unete vrednosti snage."
               : hive.strength >= 8
-              ? "Odlično stanje, košnica je jaka ✅"
-              : hive.strength >= 5
-              ? "Solidno stanje, pratiti razvoj 🟠"
-              : "Slabije stanje, preporuka kontrola 🔴"}
+                ? "Odlično stanje, košnica je jaka ✅"
+                : hive.strength >= 5
+                  ? "Solidno stanje, pratiti razvoj 🟠"
+                  : "Slabije stanje, preporuka kontrola 🔴"}
           </div>
         </div>
       </div>
@@ -294,4 +320,5 @@ export default function HiveDetailPage() {
       </div>
     </div>
   );
+
 }
