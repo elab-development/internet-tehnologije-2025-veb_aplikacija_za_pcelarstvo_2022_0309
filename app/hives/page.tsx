@@ -66,7 +66,7 @@ export default function HivesPage() {
 
   const [me, setMe] = useState<StoredUser | null>(null);
 
-  // ✅ Samo ADMIN i BEEKEEPER smeju da dodaju/uređuju košnice
+  //  Samo ADMIN i BEEKEEPER smeju da dodaju/uređuju košnice
   const canManageHives = me?.role === "ADMIN" || me?.role === "BEEKEEPER";
 
   useEffect(() => {
@@ -160,7 +160,7 @@ export default function HivesPage() {
         </div>
 
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
-          {/* ✅ Sakrij za ASSOCIATION_REP */}
+          {/*  Sakrij za ASSOCIATION_REP */}
           {canManageHives && (
             <button
               onClick={() => router.push("/hives/create")}

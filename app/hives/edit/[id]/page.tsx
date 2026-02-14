@@ -14,6 +14,7 @@ type Hive = {
 
 export default function EditHivePage() {
   const router = useRouter();
+ //uzimanje id-a iz URL-a
   const params = useParams();
   const id = Number((params as { id?: string })?.id);
 
