@@ -5,6 +5,8 @@ COPY package*.json ./
 RUN npm install
 
 COPY . .
+RUN node scripts/copy-swagger-ui.mjs
+
 
 RUN npx prisma generate
 RUN npm run build
