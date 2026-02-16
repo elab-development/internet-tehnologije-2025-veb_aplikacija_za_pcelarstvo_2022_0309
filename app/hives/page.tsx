@@ -2,6 +2,12 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
+
+const HivesMap = dynamic(() => import("../components/HivesMap").then((m) => m.HivesMap), {
+  ssr: false,
+});
+
 
 type Hive = {
   id: number;
@@ -160,7 +166,7 @@ export default function HivesPage() {
         </div>
 
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
-          {/*  Sakrij za ASSOCIATION_REP */}
+          {/* ✅ Sakrij za ASSOCIATION_REP */}
           {canManageHives && (
             <button
               onClick={() => router.push("/hives/create")}
@@ -309,6 +315,23 @@ export default function HivesPage() {
                   ))}
                 </div>
               )}
+            </div>
+          )}
+          
+
+          {!stats && hives.length > 0 && (
+            <div
+              style={{
+                background: "#ffffff",
+                borderRadius: 18,
+                padding: 18,
+                boxShadow: "0 6px 16px rgba(0,0,0,0.08)",
+                display: "grid",
+                gap: 10,
+              }}
+            >
+              <div style={{ fontWeight: 900, fontSize: 18 }}>🗺️ Mapa pčelinjaka</div>
+              <HivesMap hives={filtered} />
             </div>
           )}
 
