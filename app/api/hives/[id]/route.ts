@@ -7,7 +7,9 @@ type Context = {
 };
 
 // GET /api/hives/:id
-export async function GET(_: Request, ctx: Context) {
+export async function GET(req: Request, ctx: Context) {
+   const auth = getAuthUserFromRequest(req);
+  if (!auth) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const { id: idStr } = await ctx.params;
   const id = Number(idStr);
 
@@ -25,6 +27,13 @@ export async function GET(_: Request, ctx: Context) {
 
   if (!hive) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+  const isOwner = hive.ownerId === auth.userId;
+  const isAdmin = auth.role === "ADMIN";
+
+ 
+  if (!isOwner && !isAdmin) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
   return NextResponse.json({ hive });
