@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import jwt from "jsonwebtoken";
 
 describe("JWT test", () => {

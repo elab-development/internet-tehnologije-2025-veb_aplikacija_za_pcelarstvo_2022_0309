@@ -113,9 +113,12 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ hive }, { status: 201 });
-  } catch (err: any) {
+  } catch (err: unknown) {
     //unique prisma
-    if (err?.code === "P2002") {
+    if (   typeof err === "object" &&
+      err !== null &&
+      "code" in err &&
+      (err as { code?: string }).code === "P2002") {
       return NextResponse.json(
         { error: "Već postoji košnica sa tim imenom za ovog korisnika." },
         { status: 409 }

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { PUT } from "@/app/api/hives/[id]/route";
 import { getAuthUserFromRequest } from "@/app/lib/auth";
 import { prisma } from "@/app/lib/prisma";
