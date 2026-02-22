@@ -2,12 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 
 /**
  * Dozvoljeni origin-i (dev + produkcija).
- * Ako kasnije deploy-ujemo, dodajemo domen u listu.
+
  */
 const ALLOWED_ORIGINS = new Set([
   "http://localhost:3000",
   "http://127.0.0.1:3000",
-  // "https://tvoj-deploy-domen.com",
+  "https://internet-tehnologije-2025-veb-aplikacija.onrender.com",
+  "https://honeyflow.onrender.com",,
 ]);
 
 function addSecurityHeaders(res: NextResponse) {
@@ -18,21 +19,26 @@ function addSecurityHeaders(res: NextResponse) {
   res.headers.set("Permissions-Policy", "geolocation=(), microphone=(), camera=()");
 
   // CSP ume da polomi dev; zato je stavljamo samo u produkciji
-  if (process.env.NODE_ENV !== "production") return;
+  // if (process.env.NODE_ENV === "production") {
+  //   res.headers.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+  // }
+  return;
 
-  res.headers.set(
-    "Content-Security-Policy",
-    [
-      "default-src 'self'",
-      "script-src 'self'",
-      "style-src 'self' 'unsafe-inline'",
-      "img-src 'self' data: https:",
-      "font-src 'self' data:",
-      // dozvoli konekcije ka eksternim API-jima koje koristimo
-      "connect-src 'self' https://api.open-meteo.com https://nominatim.openstreetmap.org",
-      "frame-ancestors 'none'",
-    ].join("; ")
-  );
+  // res.headers.set(
+  //   "Content-Security-Policy",
+  //   [
+  //     "default-src 'self'",
+  //     "script-src 'self'",
+  //     "style-src 'self' 'unsafe-inline'",
+  //     "img-src 'self' data: https: https://tile.openstreetmap.org",
+
+  //     "font-src 'self' data:",
+  //     // dozvoli konekcije ka eksternim API-jima koje koristimo
+  //     "connect-src 'self' https://api.open-meteo.com https://nominatim.openstreetmap.org https://tile.openstreetmap.org",
+
+  //     "frame-ancestors 'none'",
+  //   ].join("; ")
+  // );
 }
 
 function getOrigin(req: NextRequest) {
