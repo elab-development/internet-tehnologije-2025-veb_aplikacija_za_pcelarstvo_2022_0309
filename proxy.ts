@@ -19,26 +19,26 @@ function addSecurityHeaders(res: NextResponse) {
   res.headers.set("Permissions-Policy", "geolocation=(), microphone=(), camera=()");
 
   // CSP ume da polomi dev; zato je stavljamo samo u produkciji
-  // if (process.env.NODE_ENV === "production") {
-  //   res.headers.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
-  // }
-  return;
+   if (process.env.NODE_ENV === "production") {
+     res.headers.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+   }
+  
 
-  // res.headers.set(
-  //   "Content-Security-Policy",
-  //   [
-  //     "default-src 'self'",
-  //     "script-src 'self'",
-  //     "style-src 'self' 'unsafe-inline'",
-  //     "img-src 'self' data: https: https://tile.openstreetmap.org",
+   res.headers.set(
+     "Content-Security-Policy",
+     [
+       "default-src 'self'",
+       "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+       "style-src 'self' 'unsafe-inline'",
+       "img-src 'self' data: https: https://tile.openstreetmap.org",
 
-  //     "font-src 'self' data:",
-  //     // dozvoli konekcije ka eksternim API-jima koje koristimo
-  //     "connect-src 'self' https://api.open-meteo.com https://nominatim.openstreetmap.org https://tile.openstreetmap.org",
+       "font-src 'self' data:",
+       // dozvoli konekcije ka eksternim API-jima koje koristimo
+       "connect-src 'self' https://api.open-meteo.com https://nominatim.openstreetmap.org https://tile.openstreetmap.org",
 
-  //     "frame-ancestors 'none'",
-  //   ].join("; ")
-  // );
+       "frame-ancestors 'none'",
+     ].join("; ")
+   );
 }
 
 function getOrigin(req: NextRequest) {
