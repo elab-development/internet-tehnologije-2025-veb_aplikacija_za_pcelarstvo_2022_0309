@@ -8,7 +8,7 @@ const ALLOWED_ORIGINS = new Set([
   "http://localhost:3000",
   "http://127.0.0.1:3000",
   "https://internet-tehnologije-2025-veb-aplikacija.onrender.com",
-  "https://honeyflow.onrender.com",,
+  "https://honeyflow.onrender.com",
 ]);
 
 function addSecurityHeaders(res: NextResponse) {
