@@ -117,7 +117,6 @@ Workflow fajl se nalazi u:
 
 # 🌳 Git struktura grana
 
-# 🌳 Git struktura grana
 
 Repozitorijum koristi sledeću strategiju grananja:
 
