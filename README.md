@@ -1,36 +1,207 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🐝 HoneyFlow – Web aplikacija za upravljanje pčelinjacima
 
-## Getting Started
+[![CI](https://github.com/elab-development/internet-tehnologije-2025-veb_aplikacija_za_pcelarstvo_2022_0309/actions/workflows/ci.yml/badge.svg)](https://github.com/elab-development/internet-tehnologije-2025-veb_aplikacija_za_pcelarstvo_2022_0309/actions)
+![Deployed on Render](https://img.shields.io/badge/Deployed%20on-Render-46E3B7?logo=render&logoColor=white)
 
-First, run the development server:
+HoneyFlow je full-stack web aplikacija razvijena u okviru predmeta **Internet tehnologije 2025** na Fakultetu organizacionih nauka.  
+Aplikacija je namenjena pčelarima za evidenciju, organizaciju i upravljanje pčelinjacima i košnicama, uz integraciju eksternih servisa i primenu savremenih DevOps i bezbednosnih praksi.
+
+---
+
+# ✨ Ključne funkcionalnosti
+
+- Registracija i prijava korisnika (JWT autentifikacija)
+- Role-based pristup (ADMIN / BEEKEEPER)
+- CRUD operacije nad košnicama
+- Komentarisanje košnica
+- Prikaz lokacija košnica na interaktivnoj mapi (Leaflet)
+- Integracija eksternih API-ja
+- Automatizovani testovi
+- CI/CD pipeline
+- Docker podrška
+- Swagger (OpenAPI) dokumentacija
+
+---
+
+# 🌍 Eksterni API-ji
+
+Aplikacija koristi najmanje dva eksterna API-ja:
+
+### 1️⃣ Open-Meteo API  
+Koristi se za prikaz vremenske prognoze za lokaciju pčelinjaka.  
+https://open-meteo.com/
+
+### 2️⃣ OpenStreetMap / Nominatim API  
+Koristi se za geokodiranje i dobijanje koordinata na osnovu unete adrese.  
+https://nominatim.openstreetmap.org/
+
+---
+
+# 🗺 Vizualizacija podataka
+
+Za prikaz geografskih podataka koristi se:
+
+- Leaflet mapa
+- OpenStreetMap tile slojevi
+- Dinamičko dodavanje markera
+- Interaktivni popup elementi
+
+Ovim je ispunjen zahtev za napredno korišćenje Map API-ja.
+
+---
+
+# 🛠 Tehnologije
+
+### Frontend / Backend
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+
+### Baza podataka i ORM
+- PostgreSQL
+- Prisma ORM
+
+### Autentifikacija
+- JSON Web Token (jsonwebtoken)
+
+### Testiranje
+- Jest
+- React Testing Library
+
+### DevOps
+- Docker
+- Docker Compose
+- GitHub Actions (CI/CD)
+- Render (Cloud deploy)
+
+---
+
+# 🔒 Bezbednost
+
+Implementirana zaštita od najčešćih bezbednosnih napada:
+
+- ✅ IDOR zaštita – provera vlasništva nad resursima
+- ✅ CORS kontrola – allowlist origin-a
+- ✅ CSRF zaštita (Origin check)
+- ✅ Content Security Policy (CSP)
+- ✅ X-Frame-Options
+- ✅ X-Content-Type-Options
+- ✅ Referrer-Policy
+- ✅ Prisma ORM zaštita od SQL Injection napada
+
+---
+
+# 🔄 CI/CD Pipeline
+
+Projekat koristi GitHub Actions za:
+
+- Automatsko pokretanje testova na svaki push i pull request
+- Build aplikacije
+- Build Docker image-a
+- Push Docker image-a na registry
+- Deploy na cloud platformu
+
+Pipeline se izvršava za grane:
+
+- `develop`
+- `main` / `master`
+
+Workflow fajl se nalazi u:
+
+
+.github/workflows/ci.yml
+
+
+---
+
+# 🌳 Git struktura grana
+
+
+Repozitorijum koristi sledeću strategiju grananja:
+
+- `master` – stabilna (produkcijska) verzija aplikacije
+- `develop` – integraciona grana za spajanje funkcionalnosti
+- `feature/cd-ci` – implementacija CI/CD pipeline-a
+- `feature/swagger` – implementacija Swagger (OpenAPI) dokumentacije
+
+Feature grane se razvijaju od `develop` grane i nakon završetka se spajaju nazad u `develop`.  
+Stabilne verzije se potom merguju u `master`.
+
+---
+
+# ☁️ Produkciona verzija (Cloud Deployment)
+
+Aplikacija je deploy-ovana na cloud platformu **Render** kao Docker Web Service.
+
+Deploy se vrši automatski putem CI/CD pipeline-a nakon push-a na `develop` granu.
+
+## 🔗 Live aplikacija
+
+https://internet-tehnologije-2025-veb-aplikacija.onrender.com
+
+### Deploy konfiguracija:
+
+- Platforma: Render
+- Tip servisa: Docker Web Service
+- Deploy grana: `develop`
+- Build metod: Dockerfile
+- Environment varijable:
+  - DATABASE_URL
+  - JWT_SECRET
+  - NODE_ENV=production
+
+---
+
+# ⚙️ Pokretanje projekta
+
+## 🔹 Lokalno (development)
+
+### 1️⃣ Kloniranje repozitorijuma
 
 ```bash
+git clone https://github.com/elab-development/internet-tehnologije-2025-veb_aplikacija_za_pcelarstvo_2022_0309.git
+cd internet-tehnologije-2025-veb_aplikacija_za_pcelarstvo_2022_0309
+2️⃣ Instalacija zavisnosti
+npm install
+3️⃣ Kreiranje .env fajla
+DATABASE_URL=postgresql://USER:PASSWORD@localhost:5432/honeyflow
+JWT_SECRET=your_super_secret_key
+4️⃣ Migracije baze
+npx prisma migrate dev
+5️⃣ Pokretanje aplikacije
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Aplikacija će biti dostupna na:
+http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+🐳 Pokretanje pomoću Docker-a
+docker compose up --build
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Aplikacija i PostgreSQL baza će se pokrenuti kroz docker-compose.
 
-## Learn More
+📄 API Dokumentacija
 
-To learn more about Next.js, take a look at the following resources:
+Swagger (OpenAPI) dokumentacija dostupna je na:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+/api/docs
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+OpenAPI JSON specifikacija:
 
-## Deploy on Vercel
+/api/openapi
+🧪 Testovi
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Pokretanje testova:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+npm test
+
+Testovi se automatski pokreću u CI pipeline-u na svaki push i pull request.
+
+👩‍💻 Autori
+
+Glorija
+Katarina
+Nađa
+
+Fakultet organizacionih nauka
+Predmet: Internet tehnologije 2025

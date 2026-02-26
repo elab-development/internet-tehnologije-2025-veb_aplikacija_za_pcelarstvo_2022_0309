@@ -12,6 +12,14 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+   
+    "public/swagger-ui/**",
+
+    "public/swagger-ui*.js",
+    "public/swagger-ui*.map",
+    "**/swagger-ui*.js",
+    "**/swagger-ui*.map",
+    "**/*.map",
   ]),
 ]);
 

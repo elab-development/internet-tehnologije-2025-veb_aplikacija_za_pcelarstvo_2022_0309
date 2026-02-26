@@ -1,4 +1,6 @@
 "use client";
+import Link from "next/link";
+
 
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
@@ -29,6 +31,7 @@ export default function RootLayout({
     if (u) {
       try {
         const parsed = JSON.parse(u);
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setUserName(parsed.fullName ?? null);
       } catch {
         setUserName(null);
@@ -41,6 +44,7 @@ export default function RootLayout({
   function logout() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+     
     setUserName(null);
     router.push("/login");
   }
@@ -58,9 +62,9 @@ export default function RootLayout({
           }}
         >
           <div style={{ display: "flex", gap: 16 }}>
-            <a href="/login">Login</a>
-            <a href="/register">Register</a>
-            <a href="/hives">Hives</a>
+            <Link href="/login">Login</Link>
+            <Link href="/register">Register</Link>
+            <Link href="/hives">Hives</Link>
           </div>
 
           <div style={{ display: "flex", gap: 12, alignItems: "center" }}>

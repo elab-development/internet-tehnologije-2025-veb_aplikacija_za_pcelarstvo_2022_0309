@@ -14,7 +14,7 @@ type Hive = {
 
 export default function EditHivePage() {
   const router = useRouter();
- //uzimanje id-a iz URL-a
+  //uzimanje id-a iz URL-a
   const params = useParams();
   const id = Number((params as { id?: string })?.id);
 
@@ -42,7 +42,11 @@ export default function EditHivePage() {
 
     async function load() {
       try {
-        const res = await fetch(`/api/hives/${id}`);
+        const res = await fetch(`/api/hives/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         const data = await res.json();
         if (!res.ok) {
           setError(data?.error ?? "Ne mogu da učitam košnicu.");
