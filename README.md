@@ -160,48 +160,86 @@ https://internet-tehnologije-2025-veb-aplikacija.onrender.com
 ### 1️⃣ Kloniranje repozitorijuma
 
 ```bash
-git clone https://github.com/elab-development/internet-tehnologije-2025-veb_aplikacija_za_pcelarstvo_2022_0309.git
+git clone https://github.com/elab-development/internet-tehnologije-2025-veb_aplikacija_za_pcelarstvo_2022_0309
 cd internet-tehnologije-2025-veb_aplikacija_za_pcelarstvo_2022_0309
-2️⃣ Instalacija zavisnosti
+```
+
+### 2️⃣ Instalacija zavisnosti
+
+```bash
 npm install
-3️⃣ Kreiranje .env fajla
+```
+
+### 3️⃣ Kreiranje `.env` fajla
+
+U root folderu projekta kreirati `.env` fajl sa sledećim vrednostima:
+
+```env
 DATABASE_URL=postgresql://USER:PASSWORD@localhost:5432/honeyflow
 JWT_SECRET=your_super_secret_key
-4️⃣ Migracije baze
+```
+
+### 4️⃣ Migracije baze
+
+```bash
 npx prisma migrate dev
-5️⃣ Pokretanje aplikacije
+```
+
+### 5️⃣ Pokretanje aplikacije
+
+```bash
 npm run dev
+```
 
 Aplikacija će biti dostupna na:
-http://localhost:3000
 
-🐳 Pokretanje pomoću Docker-a
+👉 http://localhost:3000
+
+---
+
+## 🐳 Pokretanje pomoću Docker-a
+
+```bash
 docker compose up --build
+```
 
-Aplikacija i PostgreSQL baza će se pokrenuti kroz docker-compose.
+Aplikacija i PostgreSQL baza će se pokrenuti kroz Docker Compose konfiguraciju.
 
-📄 API Dokumentacija
+---
+
+## 📘 API dokumentacija
 
 Swagger (OpenAPI) dokumentacija dostupna je na:
 
+```
 /api/docs
+```
 
 OpenAPI JSON specifikacija:
 
+```
 /api/openapi
-🧪 Testovi
+```
+
+---
+
+## 🧪 Testovi
 
 Pokretanje testova:
 
+```bash
 npm test
+```
 
-Testovi se automatski pokreću u CI pipeline-u na svaki push i pull request.
+---
 
-👩‍💻 Autori
+# 👩‍💻 Autori
 
-Glorija
-Katarina
-Nađa
+- Glorija  
+- Katarina  
+- Nađa  
 
-Fakultet organizacionih nauka
-Predmet: Internet tehnologije 2025
+---
+
+**Fakultet organizacionih nauka**  
+Predmet: *Internet tehnologije 2025*
