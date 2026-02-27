@@ -48,10 +48,17 @@ export default function HiveDetailPage() {
       setLoading(false);
       return;
     }
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/login");
+      return;
+    }
 
     async function load() {
       try {
-        const res = await fetch(`/api/hives/${id}`);
+        const res = await fetch(`/api/hives/${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         const data = await res.json();
         if (!res.ok) {
           setError(data?.error ?? "Ne mogu da učitam košnicu.");
