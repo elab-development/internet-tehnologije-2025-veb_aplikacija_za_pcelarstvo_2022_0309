@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-
+// OpenAPI 3.0 specifikacija za HoneyFlow API
+// Ova ruta vraća dinamički generisanu Swagger dokumentaciju
 export async function GET() {
   return NextResponse.json({
     openapi: "3.0.3",
